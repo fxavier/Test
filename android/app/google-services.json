@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "737442448291",
+    "firebase_url": "https://mz-taxi-app-default-rtdb.firebaseio.com",
+    "project_id": "mz-taxi-app",
+    "storage_bucket": "mz-taxi-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:737442448291:android:3edfcd58b6e79baf355016",
+        "android_client_info": {
+          "package_name": "com.thecode.taxidriverapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "737442448291-l4f93t94l9mjk8oqhjb5se8cm6n44jag.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBxpurANqfWKh-EYXgz2JqrMACkGnga2bU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "737442448291-l4f93t94l9mjk8oqhjb5se8cm6n44jag.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

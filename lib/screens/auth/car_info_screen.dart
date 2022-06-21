@@ -1,5 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:mz_taxi_driver_app/global/global.dart';
+import 'package:mz_taxi_driver_app/screens/screens.dart';
 import 'package:mz_taxi_driver_app/widgets/app_text.dart';
+import 'package:mz_taxi_driver_app/widgets/progress_dialog.dart';
 
 class CarInfoScreen extends StatefulWidget {
   const CarInfoScreen({Key? key}) : super(key: key);
@@ -9,9 +15,10 @@ class CarInfoScreen extends StatefulWidget {
 }
 
 class _CarInfoScreenState extends State<CarInfoScreen> {
-  TextEditingController carModelTextEditingController = TextEditingController();
+  TextEditingController carMarcaTextEditingController = TextEditingController();
   TextEditingController carNumberTextEditingController =
       TextEditingController();
+  TextEditingController carModelTextEditingController = TextEditingController();
   TextEditingController carColorTextEditingController = TextEditingController();
 
   List<String> carTypeList = [
@@ -20,6 +27,41 @@ class _CarInfoScreenState extends State<CarInfoScreen> {
   ];
 
   String? selectedCarType;
+
+  validateForm() {
+    if (carMarcaTextEditingController.text.isEmpty) {
+      Fluttertoast.showToast(msg: 'A Marca e obrigatoria');
+    } else if (carNumberTextEditingController.text.isEmpty) {
+      Fluttertoast.showToast(msg: 'A Matricula e obrigatoria');
+    } else if (carModelTextEditingController.text.isEmpty) {
+      Fluttertoast.showToast(msg: 'O modelo e obrigatorio');
+    } else if (carColorTextEditingController.text.isEmpty) {
+      Fluttertoast.showToast(msg: 'A Cor e obrigatoria');
+    } else {
+      saveCarInfo();
+    }
+  }
+
+  saveCarInfo() async {
+    Map driverCarInfoMap = {
+      "car_color": carColorTextEditingController.text.trim(),
+      "car_number": carNumberTextEditingController.text.trim(),
+      "car_model": carModelTextEditingController.text.trim(),
+      "type": selectedCarType,
+    };
+
+    DatabaseReference driversRef =
+        FirebaseDatabase.instance.ref().child("drivers");
+    driversRef
+        .child(currentFirebaseUser!.uid)
+        .child("car_details")
+        .set(driverCarInfoMap);
+
+    Fluttertoast.showToast(
+        msg: "Detalhes do carro salvo com sucesso, Parabens.");
+    Navigator.push(
+        context, MaterialPageRoute(builder: (c) => const MySplashScreen()));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +73,7 @@ class _CarInfoScreenState extends State<CarInfoScreen> {
           child: Column(
             children: [
               const SizedBox(
-                height: 10,
+                height: 2,
               ),
               Padding(
                 padding: const EdgeInsets.all(20.0),
@@ -47,7 +89,7 @@ class _CarInfoScreenState extends State<CarInfoScreen> {
                 fontWeight: FontWeight.bold,
               ),
               TextField(
-                controller: carModelTextEditingController,
+                controller: carMarcaTextEditingController,
                 style: const TextStyle(
                   color: Colors.blue,
                 ),
@@ -55,6 +97,35 @@ class _CarInfoScreenState extends State<CarInfoScreen> {
                   icon: Icon(Icons.model_training),
                   labelText: "Marca",
                   hintText: "Marca",
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.blue,
+                    ),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.blue,
+                    ),
+                  ),
+                  hintStyle: TextStyle(
+                    color: Colors.blue,
+                    fontSize: 10,
+                  ),
+                  labelStyle: TextStyle(
+                    color: Colors.blue,
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+              TextField(
+                controller: carModelTextEditingController,
+                style: const TextStyle(
+                  color: Colors.blue,
+                ),
+                decoration: const InputDecoration(
+                  icon: Icon(Icons.model_training),
+                  labelText: "Modelo",
+                  hintText: "Modelo",
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(
                       color: Colors.blue,
@@ -133,7 +204,7 @@ class _CarInfoScreenState extends State<CarInfoScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 5),
               Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: DropdownButton(
@@ -159,10 +230,12 @@ class _CarInfoScreenState extends State<CarInfoScreen> {
                     }).toList()),
               ),
               const SizedBox(
-                height: 20,
+                height: 5,
               ),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  validateForm();
+                },
                 style: ElevatedButton.styleFrom(
                   primary: Colors.blueAccent,
                 ),
